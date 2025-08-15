@@ -61,11 +61,7 @@ public class TicketDAO {
         return countTicket != null && countTicket > 0;
     }
 
-    /**
-     * Покупка: атомарно помечаем билет проданным и ставим user_id,
-     * только если он ещё не продан.
-     * Возвращает число затронутых строк (0 — не получилось; 1 — купили).
-     */
+
     public int buyTicket(long ticketId, long userId) {
         return jdbcTemplate.update("""
             UPDATE tickets
@@ -86,11 +82,7 @@ public class TicketDAO {
         """, mapper, userId, limit, offset);
     }
 
-    /**
-     * Список доступных билетов с фильтрами и пагинацией.
-     * Фильтры: дата (YYYY-MM-DD), departure/destination (LIKE), carrierName (LIKE).
-     * Доступные = не проданы (is_sold = false AND user_id IS NULL).
-     */
+
     public List<Ticket> findAvailable(String departure, String destination, String carrierName,
                                       LocalDate date, int offset, int limit) {
         StringBuilder sql = new StringBuilder("""

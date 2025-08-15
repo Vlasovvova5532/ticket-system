@@ -31,24 +31,16 @@ public class CarrierDAO {
 
     //создание перевозчика
     public long create(Carrier carrier) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO carriers(name, phone) VALUES(?, ?)",
-                    Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, carrier.getName());
-            ps.setString(2, carrier.getPhone());
-            return ps;
-        }, keyHolder);
-
-        Number key = keyHolder.getKey();
-        if (key == null) {
-            throw new IllegalStateException("Не удалось получить сгенерированный ID перевозчика");
+        Long id = jdbcTemplate.queryForObject(
+                "INSERT INTO carriers(name, phone) VALUES(?, ?) RETURNING id",
+                Long.class,
+                carrier.getName(),
+                carrier.getPhone()
+        );
+        if (id == null) {
+            throw new IllegalStateException("Не удалось получить ID перевозчика");
         }
-
-        return key.longValue();
+        return id;
     }
 
     //найти всех перевозчиков

@@ -31,17 +31,20 @@ public class RouteDAO {
     };
 
     public long createRoute(Route route) {
-        String sql = "INSERT INTO routes(departure, destination, carrier_id, duration_minutes) VALUES(?, ?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, route.getDeparture());
-            ps.setString(2, route.getDestination());
-            ps.setLong(3, route.getCarrierId());
-            ps.setInt(4, route.getDurationMinutes());
-            return ps;
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
+        Long id = jdbcTemplate.queryForObject(
+                "INSERT INTO routes(departure, destination, duration_minutes, carrier_id) " +
+                        "VALUES (?, ?, ?, ?) RETURNING id",
+                Long.class,
+                route.getDeparture(),
+                route.getDestination(),
+                route.getDurationMinutes(),
+                route.getCarrierId()
+        );
+
+        if (id == null) {
+            throw new IllegalStateException("Не удалось получить ID маршрута");
+        }
+        return id;
     }
 
     public List<Route> findAll() {
