@@ -8,6 +8,7 @@ public class Carrier {
 
     public Carrier() {
     }
+
     public Carrier(Long id, String name, String phone) {
         this.id = id;
         this.name = name;

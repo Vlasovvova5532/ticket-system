@@ -2,6 +2,7 @@ package com.example.ticket_system.controller;
 
 import com.example.ticket_system.model.User;
 import com.example.ticket_system.service.UserService;
+import com.example.ticket_system.model.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users")
@@ -44,19 +46,32 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("status", "error", "errors", errors));
         }
         try {
+            user.setRoles(Set.of(Role.CUSTOMER));
             userService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("Пользователь успешно зарегистрирован");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"error\": \"" + e.getMessage() + "\"}");
         }
-//        try {
-//            userService.registerUser(user);
-//            return ResponseEntity.ok(Map.of("status", "success"));
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
-//        }
     }
+
+    @Operation(summary = "Назначить роль ADMIN пользователю")
+    @PostMapping("/{userId}/make-admin")
+    public ResponseEntity<?> makeAdmin(@PathVariable Long userId) {
+        try {
+            userService.assignAdminRole(userId);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Пользователю назначена роль ADMIN"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
+        }
+    }
+
     @Operation(summary = "Получить список всех пользователей")
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
@@ -68,6 +83,6 @@ public class UserController {
                     "message",
                     "Список пользователей пуст"));
         }
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(users);
     }
 }

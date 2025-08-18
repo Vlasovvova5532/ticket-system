@@ -64,4 +64,20 @@ public class CarrierDAO {
         );
         return count == null ? 0 : count;
     }
+
+    public boolean existsById(long id) {
+        Integer c = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM carriers WHERE id = ?", Integer.class, id);
+        return c != null && c > 0;
+    }
+
+    public int update(long id, Carrier carrier) {
+        return jdbcTemplate.update(
+                "UPDATE carriers SET name = ?, phone = ? WHERE id = ?",
+                carrier.getName(), carrier.getPhone(), id
+        );
+    }
+
+    public int delete(long id) {
+        return jdbcTemplate.update("DELETE FROM carriers WHERE id = ?", id);
+    }
 }

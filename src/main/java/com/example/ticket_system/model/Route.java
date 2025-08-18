@@ -42,14 +42,6 @@ public class Route {
         this.destination = destination;
     }
 
-//    public Carrier getCarrier() {
-//        return carrier;
-//    }
-//
-//    public void setCarrier(Carrier carrier) {
-//        this.carrier = carrier;
-//    }
-
     public Integer getDurationMinutes() {
         return durationMinutes;
     }

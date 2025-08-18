@@ -34,3 +34,19 @@ CREATE TABLE tickets (
     CONSTRAINT fk_tickets_user FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE SET NULL
 );
+
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(32) UNIQUE NOT NULL  '
+);
+
+
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
+
+INSERT INTO roles(name) VALUES ('ADMIN') ON CONFLICT (name) DO NOTHING;
+INSERT INTO roles(name) VALUES ('BUYER') ON CONFLICT (name) DO NOTHING;

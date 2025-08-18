@@ -3,6 +3,9 @@ package com.example.ticket_system.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class User {
 
     private Long id;
@@ -18,13 +21,16 @@ public class User {
     @NotBlank(message = "ФИО обязательно")
     private String fullName;
 
+    private Set<Role> role = new HashSet<>();
+
     public User(){}
 
-    public User(Long id, String login, String password, String fullName) {
+    public User(Long id, String login, String password, String fullName, Set<Role> role) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.fullName = fullName;
+        this.role = role;
     }
 
     // геттеры и сеттеры
@@ -51,5 +57,13 @@ public class User {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
+    public Set<Role> getRoles() {
+        return role;
+    }
+    public void setRoles(Set<Role> role) {
+        this.role = role;
+    }
+
 }
 

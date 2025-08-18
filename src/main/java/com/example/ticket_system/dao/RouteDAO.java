@@ -3,12 +3,8 @@ package com.example.ticket_system.dao;
 import com.example.ticket_system.model.Route;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -69,4 +65,22 @@ public class RouteDAO {
     public int countByCarrier(long carrierId) {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM routes WHERE carrier_id = ?", Integer.class, carrierId);
     }
+
+    public boolean existsById(long id) {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM routes WHERE id = ?", Integer.class, id);
+        return count != null && count > 0;
+    }
+
+    public int updateRoute(long id, Route route) {
+        return jdbcTemplate.update("""
+            UPDATE routes
+               SET departure = ?, destination = ?, duration_minutes = ?, carrier_id = ?
+             WHERE id = ?
+        """, route.getDeparture(), route.getDestination(), route.getDurationMinutes(), route.getCarrierId(), id);
+    }
+
+    public int deleteRoute(long id) {
+        return jdbcTemplate.update("DELETE FROM routes WHERE id = ?", id);
+    }
+
 }

@@ -29,5 +29,17 @@ public class RouteService {
     public int countByCarrier(long carrierId) {
         return dao.countByCarrier(carrierId);
     }
+
+    public boolean existsById(long id) {
+        return dao.existsById(id);
+    }
+
+    public boolean updateRoute(long id, Route route) {
+        return dao.updateRoute(id, route) > 0;
+    }
+
+    public boolean deleteRoute(long id) {
+        return dao.deleteRoute(id) > 0;
+    }
 }
 

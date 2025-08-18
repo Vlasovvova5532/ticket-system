@@ -130,4 +130,28 @@ public class TicketDAO {
             return null;
         }
     }
+
+    public int updateTicket(long id, Ticket t) {
+        return jdbcTemplate.update(con -> {
+            String sql = "UPDATE tickets SET route_id=?, date_time=?, seat_number=?, price=?, is_sold=?, user_id=? WHERE id=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setLong(1, t.getRouteId());
+            ps.setTimestamp(2, Timestamp.valueOf(t.getDateTime()));
+            ps.setInt(3, t.getSeatNumber());
+            ps.setBigDecimal(4, t.getPrice());
+
+            if (t.getIsSold() == null) ps.setNull(5, java.sql.Types.BOOLEAN);
+            else ps.setBoolean(5, t.getIsSold());
+
+            if (t.getUserId() == null) ps.setNull(6, java.sql.Types.BIGINT);
+            else ps.setLong(6, t.getUserId());
+
+            ps.setLong(7, id);
+            return ps;
+        });
+    }
+
+    public int deleteTicket(long id) {
+        return jdbcTemplate.update("DELETE FROM tickets WHERE id = ?", id);
+    }
 }
